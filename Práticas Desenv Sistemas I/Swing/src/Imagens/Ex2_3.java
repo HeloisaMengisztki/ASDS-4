@@ -10,9 +10,9 @@ public class Ex2_3 implements ActionListener {
     JLabel msg = new JLabel("");
     int qtdBotoes = 8;
     ArrayList<Integer> ordem = new ArrayList<>();
-    ArrayList<JButton> botoes = new ArrayList<>();
+    ArrayList<ImageIcon> cartasViradas = new ArrayList<>();
     Map<Integer, ImageIcon> imagInt = new HashMap<>();
-    Map<Integer, JButton> buttonInt = new HashMap<>();
+    Map<Integer, ImageIcon> clicks = new HashMap<>();
 
     private JFrame initialSettings() {
         JFrame frame = new JFrame("Memória");
@@ -38,7 +38,7 @@ public class Ex2_3 implements ActionListener {
 
     private void mostraMesaInicial(JFrame frame) {
         for (int i = 0; i < qtdBotoes; i++) {
-            placeButton(frame, imagInt.get(ordem.get(i)), i);
+            placeButton(frame, imagInt.get(0), i);
         }
     }
 
@@ -67,7 +67,38 @@ public class Ex2_3 implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        var aa = e.getSource();
+        boolean igual = false;
+
+        var buttonClicked = (JButton) e.getSource();
+        var buttonPlace = (Integer) buttonClicked.getClientProperty("id");
+
+        var imgButton = imagInt.get(ordem.get(buttonPlace));
+        if(clicks.containsKey(buttonPlace)){
+            return;
+        }
+
+        clicks.put(buttonPlace, imgButton);
+        buttonClicked.setIcon(imgButton);
+
+        if(clicks.size() == 2){
+
+            var images = clicks.values();
+            var iguais = images.equals(images.stream().findFirst());
+
+            if (iguais) {
+                cartasViradas.add(imgButton);//ver pontuação para não estourar, calcular com as cartasViradas;
+            }else{
+                viraCartas(clicks);
+            }
+
+            clicks.clear();
+        }
+    }
+
+    private void viraCartas(Map<Integer, ImageIcon> clicks) {
+        for (int i = 0; i < clicks.size(); i++) {
+            //placeButton(frame, imagInt.get(0), i); //pegar botão pelo id e set img para a zero
+        }
     }
 
     public static void main(String[] args) {
