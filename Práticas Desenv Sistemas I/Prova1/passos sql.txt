@@ -1,0 +1,11 @@
+cmd -> mysql -u root -p
+-> pwd
+mysql -> create database ifsc_prova
+mysql -> create table funcionario(
+	id int not null AUTO_INCREMENT,
+	nome varchar(255),
+	profissao varchar(255),
+	salario int,
+	primary key (id)
+	);
+mysql -> source path\script.sql
