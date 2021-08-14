@@ -8,10 +8,13 @@ import javax.swing.*;
 
 public class Ex2_3 implements ActionListener {
     JLabel msg = new JLabel("");
+
     int qtdBotoes = 8;
-    ArrayList<Integer> ordem = new ArrayList<>();
+    ArrayList<Integer> ordem;
+    Map<Integer, ImageIcon> allImages;
+
     ArrayList<ImageIcon> cartasViradas = new ArrayList<>();
-    Map<Integer, ImageIcon> imagInt = new HashMap<>();
+    ArrayList<JButton> botoesVirar = new ArrayList<>();
     Map<Integer, ImageIcon> clicks = new HashMap<>();
 
     private JFrame initialSettings() {
@@ -29,28 +32,25 @@ public class Ex2_3 implements ActionListener {
         iniciaImagens();
         montaMesaAleatorio();
         mostraMesaInicial(frame);
-
-        iniciaJogo();
-    }
-
-    private void iniciaJogo() {
     }
 
     private void mostraMesaInicial(JFrame frame) {
         for (int i = 0; i < qtdBotoes; i++) {
-            placeButton(frame, imagInt.get(0), i);
+            placeButton(frame, allImages.get(0), i);
         }
     }
 
     private void iniciaImagens() {
-        imagInt.put(0, new ImageIcon("./img/memoria/carta1.png"));
-        imagInt.put(1, new ImageIcon("./img/memoria/carta3.png"));
-        imagInt.put(2, new ImageIcon("./img/memoria/carta4.png"));
-        imagInt.put(3, new ImageIcon("./img/memoria/carta2.png"));
-        imagInt.put(4, new ImageIcon("./img/memoria/carta5.png"));
+        allImages = new HashMap<>();
+        allImages.put(0, new ImageIcon("./img/memoria/carta1.png"));
+        allImages.put(1, new ImageIcon("./img/memoria/carta3.png"));
+        allImages.put(2, new ImageIcon("./img/memoria/carta4.png"));
+        allImages.put(3, new ImageIcon("./img/memoria/carta2.png"));
+        allImages.put(4, new ImageIcon("./img/memoria/carta5.png"));
     }
 
     private void montaMesaAleatorio() {
+        ordem = new ArrayList<>();
         for (int i = 1; i <= qtdBotoes / 2; i++) {
             ordem.add(i);
             ordem.add(i);
@@ -67,37 +67,52 @@ public class Ex2_3 implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        boolean igual = false;
-
         var buttonClicked = (JButton) e.getSource();
         var buttonPlace = (Integer) buttonClicked.getClientProperty("id");
 
-        var imgButton = imagInt.get(ordem.get(buttonPlace));
-        if(clicks.containsKey(buttonPlace)){
+        var imgButton = allImages.get(ordem.get(buttonPlace));
+        if (clicks.containsKey(buttonPlace)) {
             return;
         }
 
         clicks.put(buttonPlace, imgButton);
         buttonClicked.setIcon(imgButton);
+        botoesVirar.add(buttonClicked);
 
-        if(clicks.size() == 2){
+        var click = clicks.size();
 
-            var images = clicks.values();
-            var iguais = images.equals(images.stream().findFirst());
-
-            if (iguais) {
-                cartasViradas.add(imgButton);//ver pontuação para não estourar, calcular com as cartasViradas;
-            }else{
-                viraCartas(clicks);
+        if (click >= 2 && verificaIgualdade(clicks)) {
+            cartasViradas.add(imgButton);
+            if (cartasViradas.size() == 4) {
+                msg.setText("ganhou");
             }
-
             clicks.clear();
+            botoesVirar.remove(0);
+            botoesVirar.remove(0);
+        } else if (click == 3) {
+            viraCartas(botoesVirar);
+
+            botoesVirar.remove(0);
+            botoesVirar.remove(0);
+
+            ArrayList<Integer> ids = new ArrayList<>(clicks.keySet());
+
+            clicks.remove(ids.get(0));
+            clicks.remove(ids.get(0));
         }
     }
 
-    private void viraCartas(Map<Integer, ImageIcon> clicks) {
-        for (int i = 0; i < clicks.size(); i++) {
-            //placeButton(frame, imagInt.get(0), i); //pegar botão pelo id e set img para a zero
+    private boolean verificaIgualdade(Map<Integer, ImageIcon> clicks) {
+        var images = clicks.values().toArray();
+        var img1 = images[0];
+        var img2 = images[1];
+
+        return img1 == img2;
+    }
+
+    private void viraCartas(ArrayList<JButton> buttons) {
+        for (int i = 0; i < 2; i++) {
+            buttons.get(i).setIcon(allImages.get(0));
         }
     }
 
