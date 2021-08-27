@@ -13,8 +13,6 @@ public class BotaoCampo extends JButton implements CampoObservador, MouseListene
 
 	private final Campo campo;
 
-	private ImageIcon IMG_EXPLODIR = PadroesCoresImagens.getBombImage();
-
 	public BotaoCampo(Campo campo) {
 		this.campo = campo;
 		setBackground(PadroesCoresImagens.BG_PADRAO);
@@ -73,7 +71,7 @@ public class BotaoCampo extends JButton implements CampoObservador, MouseListene
 	
 	private void aplicarEstiloExplodir() {
 		setBackground(Color.RED);
-		setIcon(IMG_EXPLODIR);
+		setIcon(PadroesCoresImagens.ICON_BOMBA);
 	}
 	
 	private void aplicarEstiloPadrao() {

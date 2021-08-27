@@ -6,6 +6,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import historico.Historico;
 import modelo.Tabuleiro;
 
 public class PainelTabuleiro extends JPanel {
@@ -18,8 +19,10 @@ public class PainelTabuleiro extends JPanel {
 		tabuleiro.adicionarObservadorEventos(e -> {
 			
 			SwingUtilities.invokeLater(() -> {
-				if (e.isGanhou())
+				if (e.isGanhou()) {
+					var historico = new Historico();
 					JOptionPane.showMessageDialog(this, "Parab�ns! Voc� ganhou!");
+				}
 				else
 					JOptionPane.showMessageDialog(this, "Que pena... Voc� perdeu!");
 				
