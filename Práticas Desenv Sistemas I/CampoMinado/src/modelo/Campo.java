@@ -1,0 +1,109 @@
+package modelo;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Campo {
+
+	private final int linha;
+	private final int coluna;
+	
+	private boolean aberto;
+	private boolean minado;
+	private boolean marcado;
+	
+	private List<Campo> vizinhos = new ArrayList<Campo>();
+	private List<CampoObservador> observadores = new ArrayList<>();
+	
+	Campo(int linha, int coluna) {
+		this.linha = linha;
+		this.coluna = coluna;
+	}
+	
+	public boolean isMinado() {
+		return minado;
+	}
+	
+	public boolean isMarcado() {
+		return marcado;
+	}
+	
+	void setAberto(boolean aberto) {
+		this.aberto = aberto;
+		
+		if (aberto)
+			notificarObservadores(Eventos.ABRIR);
+	}
+	
+	void reiniciar() {
+		aberto = false;
+		minado = false;
+		marcado = false;
+		notificarObservadores(Eventos.REINICIAR);
+	}
+	
+	void minar() {
+		minado = true;
+	}
+	
+	public void adicionarObservador(CampoObservador obs) {
+		observadores.add(obs);
+	}
+	
+	private void notificarObservadores(Eventos evento) {
+		observadores.stream().forEach(o -> o.ocorreuEvento(this, evento));
+	}
+	
+	boolean adicionarVizinho(Campo vizinho) {
+		int d = (int) (Math.sqrt(Math.pow(linha - vizinho.linha, 2) + 
+				       Math.pow(coluna - vizinho.coluna, 2)));
+		if (d == 1) {
+			vizinhos.add(vizinho);
+			return true;
+		}
+		return false;
+	}
+	
+	public void alternarMarcacao() {
+		if (!aberto) {
+			marcado = !marcado;
+			
+			if (marcado)
+				notificarObservadores(Eventos.MARCAR);
+			else
+				notificarObservadores(Eventos.DESMARCAR);
+		}
+	}
+	
+	boolean objetivoAlcancado() {
+		boolean desvendado = aberto && !minado;
+		boolean protegido = minado && marcado;
+		
+		return desvendado || protegido;
+	}
+	
+	public boolean abrir() {
+		if (aberto || marcado)
+			return false;
+		
+		if (minado) {
+			notificarObservadores(Eventos.EXPLODIR);
+			return true;
+		}
+		
+		setAberto(true);
+		
+		if (vizinhancaSegura())
+			vizinhos.forEach(v -> v.abrir());
+		
+		return true;
+	}
+	
+	public boolean vizinhancaSegura() {
+		return vizinhos.stream().noneMatch(v -> v.minado);
+	}
+	
+	public int minasNaVizinhanca() {
+		return (int) vizinhos.stream().filter(v -> v.minado).count();
+	}
+}
