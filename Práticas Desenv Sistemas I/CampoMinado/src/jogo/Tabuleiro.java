@@ -1,4 +1,4 @@
-package modelo;
+package jogo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,5 +98,15 @@ public class Tabuleiro implements CampoObservador {
 		} else if (objetivoAlcancado()) {
 			notificarObservadores(true);
 		}
+	}
+
+	public String getNivel() {
+		if(minas == 15)
+			return "Fácil";
+
+		if(minas == 30)
+			return "Médio";
+
+		return "Difícil";
 	}
 }

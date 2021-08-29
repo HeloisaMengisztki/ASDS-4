@@ -1,8 +1,8 @@
 package visao;
 
-import modelo.Campo;
-import modelo.CampoObservador;
-import modelo.Eventos;
+import jogo.Campo;
+import jogo.CampoObservador;
+import jogo.Eventos;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,18 +25,11 @@ public class BotaoCampo extends JButton implements CampoObservador, MouseListene
 
 	@Override
 	public void ocorreuEvento(Campo campo, Eventos evento) {
-		switch(evento) {
-			case ABRIR:
-				aplicarEstiloAbrir();
-				break;
-			case MARCAR:
-				aplicarEstiloMarcar();
-				break;
-			case EXPLODIR:
-				aplicarEstiloExplodir();
-				break;
-			default:
-				aplicarEstiloPadrao();
+		switch (evento) {
+			case ABRIR -> aplicarEstiloAbrir();
+			case MARCAR -> aplicarEstiloMarcar();
+			case EXPLODIR -> aplicarEstiloExplodir();
+			default -> aplicarEstiloPadrao();
 		}
 		
 		SwingUtilities.invokeLater(() -> {

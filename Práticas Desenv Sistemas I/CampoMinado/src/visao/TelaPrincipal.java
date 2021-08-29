@@ -1,51 +1,48 @@
 package visao;
 
-import modelo.Tabuleiro;
+import jogo.Tabuleiro;
 
 import javax.swing.*;
+import java.awt.*;
 
 
 public class TelaPrincipal extends JFrame {
 
-	public TelaPrincipal() {
+    public TelaPrincipal() {
+        CardLayout cardLayout = new CardLayout();
+        JPanel mainPanel = new JPanel(cardLayout);
+        add(mainPanel);
+        mainPanel.add(new TelaInformacoes(), "info");
+        mainPanel.add(new TelaHistorico(), "historico");
+        mainPanel.add(new TelaTabuleiro(new Tabuleiro(8,10,15)), "facil");
+        mainPanel.add(new TelaTabuleiro(new Tabuleiro(10,12,30)), "medio");
+        mainPanel.add(new TelaTabuleiro(new Tabuleiro(12,14,45)), "dificil");
 
-		Tabuleiro tabuleiroFacil = new Tabuleiro(8, 10, 20);
-		add(new PainelTabuleiro(tabuleiroFacil));
+        configs(cardLayout, mainPanel);
+    }
 
-		configs();
-	}
+    private void configs(CardLayout cardLayout, JPanel mainPanel) {
+        setTitle("Campo Minado");
+        setSize(690, 438);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setJMenuBar(createMenuBar(cardLayout, mainPanel));
+        setVisible(true);
+    }
 
-	private void configs() {
-		setTitle("Campo Minado");
-		setSize(690, 438);
-		setLocationRelativeTo(null);
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		setJMenuBar(createMenuBar());
-		setUndecorated(true);
-		setLocationByPlatform(true);
-		setVisible(true);
-	}
+    private JMenuBar createMenuBar(CardLayout cardLayout, JPanel mainPanel) {
+        BarraMenu menuBar = new BarraMenu();
+        menuBar.add(menuBar.createMenu(cardLayout, mainPanel));
+        return menuBar;
+    }
 
-	private JMenu createFileMenu() {
-		JMenu fileMenu = new JMenu("Inicio");
-		JMenuItem newItem = new JMenuItem("Novo Jogo");
-		fileMenu.add(newItem);
-		JMenuItem openItem = new JMenuItem("Histórico");
-		fileMenu.add(openItem);
-		JMenuItem saveItem = new JMenuItem("Sobre");
-		fileMenu.add(saveItem);
-		JMenuItem sair = new JMenuItem("Sair");
-		fileMenu.add(sair);
-		return fileMenu;
-	}
+    public static void main(String[] args) {
+//		new TelaPrincipal();
 
-	private JMenuBar createMenuBar() {
-		JMenuBar menuBar = new JMenuBar();
-		menuBar.add(createFileMenu());
-		return menuBar;
-	}
-
-	public static void main(String[] args) {
-		new TelaPrincipal();
-	}
+        EventQueue.invokeLater(() -> {
+            TelaPrincipal frame = new TelaPrincipal();
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setVisible(true);
+        });
+    }
 }

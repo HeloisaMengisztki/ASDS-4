@@ -1,4 +1,4 @@
-package modelo;
+package jogo;
 
 public class ResultadoEvento {
 
