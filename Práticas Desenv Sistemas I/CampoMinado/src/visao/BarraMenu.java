@@ -1,6 +1,7 @@
 package visao;
 
 
+import historico.Historico;
 import jogo.Tabuleiro;
 
 import javax.swing.*;

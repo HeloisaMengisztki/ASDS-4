@@ -1,6 +1,10 @@
 package visao;
 
+import historico.Historico;
+import historico.HistoricoRepository;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
@@ -8,29 +12,49 @@ public class TelaHistorico extends JPanel {
     private final GridBagConstraints constrains = new GridBagConstraints();
     private final GridBagLayout grid = new GridBagLayout();
     public final int horizontal = GridBagConstraints.HORIZONTAL;
-    public final JTable table = montaTabelaHistorico();
+    public final int both = GridBagConstraints.BOTH;
+    public final HistoricoRepository repository = new HistoricoRepository();
+
 
     public TelaHistorico() {
         setLayout(grid);
 
-        addComponent(new JLabel(getTextoTitulo()), 0, 0);
-        addComponent(getSelectNiveis(), 1, 5);
-        addComponent(montaTabelaHistorico(), 2, 5);
+        addComponent(new JLabel(getTextoTitulo()), 0,0, 0, horizontal);
+        addComponent(getSelectNiveis(), 1, 0,0, horizontal);
+        addComponent(montaScrollPane(), 2, 1,10, both);
+    }
+
+    private JScrollPane montaScrollPane(){
+        var aa = montaTabelaHistorico();
+
+        var scrollPane = new JScrollPane(aa);
+        scrollPane.setBounds(36, 37, 407, 79);
+
+        return  scrollPane;
     }
 
     private JTable montaTabelaHistorico() {
-        Object [][] dados = {
-                {"20/05/2021", "00:00:12", "Fácil"},
-                {"21/05/2021", "00:00:15", "Médio"},
-                {"22/05/2021", "00:00:18", "Difícil"}
-        };
+        var dados = repository.getAll();
 
-        String [] colunas = {"Data", "Duração", "Nível"};
-        return new JTable(dados, colunas);
+        String[] colunas = {"Data", "Duração", "Nível", "Status"};
+
+        DefaultTableModel table = new DefaultTableModel();
+        table.setColumnIdentifiers(colunas);
+
+        for (Historico hist : dados) {
+            Object h[] = new Object[4];
+            h[0] = hist.getData();
+            h[1] = hist.getDuracao();
+            h[2] = hist.getNivel();
+            h[3] = hist.getStatus();
+            table.addRow(h);
+        }
+
+        return new JTable(table);
     }
 
     private JComboBox getSelectNiveis() {
-        String[] niveis = { "Fácil", "Médio", "Difícil", "Status" };
+        String[] niveis = {"Fácil", "Médio", "Difícil"};
 
         var petList = new JComboBox(niveis);
         petList.setSelectedIndex(2);
@@ -39,13 +63,13 @@ public class TelaHistorico extends JPanel {
     }
 
     private void BuscaInfoBanco(ActionEvent event) {
-        switch (event.getActionCommand()){
+        switch (event.getActionCommand()) {
             case "Fácil":
-               //busca infos do banco
+                repository.getAllFiltered("Fácil");
             case "Médio":
-                //busca infos do banco
+                repository.getAllFiltered("Médio");
             case "Difícil":
-                //busca infos do banco
+                repository.getAllFiltered("Difícil");
         }
     }
 
@@ -53,13 +77,13 @@ public class TelaHistorico extends JPanel {
         return "<html><h1>Histórico</h1></html>";
     }
 
-    private void addComponent(Component comp, int row, int height) {
-        constrains.fill = horizontal;
+    private void addComponent(Component comp, int row, int width, int height, int fill) {
+        constrains.fill = fill;
         constrains.gridy = row;
         constrains.gridx = 0;
-        constrains.weightx = 0;
+        constrains.weightx = width;
         constrains.weighty = height;
-        constrains.insets = new Insets(5,5,5,5);
+        constrains.insets = new Insets(5, 5, 5, 5);
 
         grid.addLayoutComponent(comp, constrains);
         add(comp);

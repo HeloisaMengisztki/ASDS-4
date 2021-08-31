@@ -8,8 +8,9 @@ import java.sql.Connection;
         import javax.swing.JOptionPane;
 
 public class HistoricoRepository {
-    private final String INSERT = "INSERT INTO HISTORICO (DATA, DURACAO, NIVEL, STATUS) VALUES (?,?,?)";
+    private final String INSERT = "INSERT INTO HISTORICO (DATA, DURACAO, NIVEL, STATUS) VALUES (?,?,?,?)";
     private final String LIST = "SELECT * FROM HISTORICO";
+    private final String LIST_FILTERED = "SELECT * FROM HISTORICO WHERE nivel = (?)";
 
     public void inserir(Historico historico) {
         if (historico != null) {
@@ -25,7 +26,6 @@ public class HistoricoRepository {
                 pstm.setString(4, historico.getStatus());
 
                 pstm.execute();
-                JOptionPane.showMessageDialog(null, "Contato cadastrado com sucesso");
                 FabricaConexao.fechaConexao(conn, pstm);
 
             } catch (Exception e) {
@@ -45,6 +45,33 @@ public class HistoricoRepository {
         try {
             conn = FabricaConexao.getConexao();
             pstm = conn.prepareStatement(LIST);
+            rs = pstm.executeQuery();
+            while (rs.next()) {
+                Historico historico = new Historico();
+
+                historico.setData(rs.getDate("data"));
+                historico.setDuracao(rs.getTime("duracao"));
+                historico.setNivel(rs.getString("nivel"));
+                historico.setStatus(rs.getString("status"));
+                historicos.add(historico);
+            }
+            FabricaConexao.fechaConexao(conn, pstm, rs);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao listar historicos" + e.getMessage());
+        }
+        return historicos;
+    }
+
+    public List<Historico> getAllFiltered(String nivel) {
+        Connection conn = null;
+        PreparedStatement pstm = null;
+        ResultSet rs = null;
+        ArrayList<Historico> historicos = new ArrayList<Historico>();
+        try {
+            conn = FabricaConexao.getConexao();
+            pstm = conn.prepareStatement(LIST_FILTERED);
+            pstm.setString(1, nivel);
+
             rs = pstm.executeQuery();
             while (rs.next()) {
                 Historico historico = new Historico();

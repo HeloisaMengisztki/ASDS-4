@@ -4,10 +4,10 @@ import java.sql.*;
 
 public class FabricaConexao {
     private static final String USUARIO = "root";
-    private static final String SENHA = "root";
-    private static final String DATABASE = "agenda";
+    private static final String SENHA = "";
+    private static final String DATABASE = "test";
     private static final String DRIVER_CONEXAO =
-            "com.mysql.jdbc.Driver";
+            "org.mariadb.jdbc.Driver";
     private static final String STR_CONEXAO =
             "jdbc:mysql://localhost:3306/";
 

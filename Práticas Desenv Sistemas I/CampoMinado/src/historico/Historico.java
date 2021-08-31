@@ -1,40 +1,43 @@
 package historico;
 
+import java.sql.Date;
 import java.sql.Time;
-import java.util.Date;
+import java.time.*;
+
+import static java.time.temporal.ChronoUnit.*;
 
 public class Historico {
     private Date data;
-    private Time duracao;
+    private Time inicio;
+    private Time fim;
     private String nivel;
     private String status;
-    private FabricaConexao banco;
+    private Time duracao;
 
-    public Historico(Date data, Time inicio, Time fim, String nivel, String status) {
+    public Historico(Date data, Time inicio, String nivel) {
         this.data = data;
-        this.duracao = fim;
+        this.inicio = inicio;
         this.nivel = nivel;
-        this.status = status;
     }
 
-    public Historico(){
-
-    }
-
-    public void SalvaBanco() {
-
-    }
-
-    public void BuscaTodos() {
-
+    public Historico() {
     }
 
     public String getNivel() {
         return nivel;
     }
 
-    public Time getDuracao() {
-        return duracao;
+    public void calculaDuracao() {
+        var inicio = this.inicio.toLocalTime();
+        var fim = this.fim.toLocalTime();
+
+
+        var horas = (int) inicio.until(fim, HOURS);
+        var minutos  = (int) inicio.until(fim, MINUTES);
+        var segundos = (int) inicio.until(fim, SECONDS);
+
+        LocalTime time = LocalTime.of(horas, minutos, segundos);
+        duracao = Time.valueOf(time);
     }
 
     public java.sql.Date getData() {
@@ -49,15 +52,23 @@ public class Historico {
         this.nivel = nivel;
     }
 
-    public void setDuracao(Time duracao) {
-        this.duracao = duracao;
-    }
-
     public void setData(Date data) {
         this.data = data;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public void setFim(Time fim) {
+        this.fim = fim;
+    }
+
+    public void setDuracao(Time duracao) {
+        this.duracao = duracao;
+    }
+
+    public Time getDuracao() {
+        return this.duracao;
     }
 }
