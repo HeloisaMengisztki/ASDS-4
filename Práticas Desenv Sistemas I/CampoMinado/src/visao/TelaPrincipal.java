@@ -37,8 +37,6 @@ public class TelaPrincipal extends JFrame {
     }
 
     public static void main(String[] args) {
-//		new TelaPrincipal();
-
         EventQueue.invokeLater(() -> {
             TelaPrincipal frame = new TelaPrincipal();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -1,9 +1,5 @@
 package visao;
 
-
-import historico.Historico;
-import jogo.Tabuleiro;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

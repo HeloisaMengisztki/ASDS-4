@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 public class TelaHistorico extends JPanel {
     private final GridBagConstraints constrains = new GridBagConstraints();
@@ -14,6 +15,7 @@ public class TelaHistorico extends JPanel {
     public final int horizontal = GridBagConstraints.HORIZONTAL;
     public final int both = GridBagConstraints.BOTH;
     public final HistoricoRepository repository = new HistoricoRepository();
+    public final JTable table = populaTodaTabelaHisotrico();
 
 
     public TelaHistorico() {
@@ -25,17 +27,19 @@ public class TelaHistorico extends JPanel {
     }
 
     private JScrollPane montaScrollPane(){
-        var aa = montaTabelaHistorico();
-
-        var scrollPane = new JScrollPane(aa);
+        var scrollPane = new JScrollPane(table);
         scrollPane.setBounds(36, 37, 407, 79);
 
         return  scrollPane;
     }
 
-    private JTable montaTabelaHistorico() {
+    private JTable populaTodaTabelaHisotrico(){
         var dados = repository.getAll();
 
+        return montaTabelaHistorico(dados);
+    }
+
+    private JTable montaTabelaHistorico(List<Historico> dados) {
         String[] colunas = {"Data", "Duração", "Nível", "Status"};
 
         DefaultTableModel table = new DefaultTableModel();
@@ -63,15 +67,30 @@ public class TelaHistorico extends JPanel {
     }
 
     private void BuscaInfoBanco(ActionEvent event) {
-        switch (event.getActionCommand()) {
+        JComboBox comboBox = (JComboBox) event.getSource();
+
+        var selected = comboBox.getSelectedItem().toString();
+
+        switch (selected) {
             case "Fácil":
-                repository.getAllFiltered("Fácil");
+                montaTabelaFiltros("Fácil");
+                break;
             case "Médio":
-                repository.getAllFiltered("Médio");
+                montaTabelaFiltros("Médio");
+                break;
             case "Difícil":
-                repository.getAllFiltered("Difícil");
+                montaTabelaFiltros("Difícil");
+                break;
         }
     }
+
+    private void montaTabelaFiltros(String nivel) {
+        table.clearSelection();
+
+        var dados = repository.getAllFiltered(nivel);
+        montaTabelaHistorico(dados);
+    }
+
 
     private String getTextoTitulo() {
         return "<html><h1>Histórico</h1></html>";

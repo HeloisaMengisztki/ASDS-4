@@ -22,7 +22,6 @@ public class TelaTabuleiro extends JPanel {
 
         tabuleiro.adicionarBotaoCadaCampo(c -> add(new BotaoCampo(c)));
         tabuleiro.adicionarObservadorEventos(e -> {
-
             SwingUtilities.invokeLater(() -> {
                 Time time = new Time(System.currentTimeMillis());
                 if (e.isGanhou()) {

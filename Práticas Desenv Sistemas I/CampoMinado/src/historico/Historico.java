@@ -41,7 +41,7 @@ public class Historico {
     }
 
     public java.sql.Date getData() {
-        return (java.sql.Date) data;
+        return data;
     }
 
     public String getStatus() {
